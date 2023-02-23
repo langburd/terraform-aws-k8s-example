@@ -14,11 +14,10 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  provider "kubernetes" {
+  kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
     token                  = data.aws_eks_cluster_auth.cluster.token
-    load_config_file       = false
   }
 }
 
@@ -35,7 +34,7 @@ resource "kubernetes_namespace" "ingress_nginx" {
 }
 
 resource "helm_release" "nginx_ingress" {
-  name       = "nginx-ingress"
+  name = "nginx-ingress"
 
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "nginx-ingress"
@@ -56,22 +55,23 @@ data "kubernetes_service" "ingress" {
     name      = "ingress-nginx-controller"
     namespace = "ingress-nginx"
   }
+  depends_on = [helm_release.nginx_ingress]
 }
 
-# Get ID of the zone hosted in Route53 (if it's not managed by Terraform)
-data "aws_route53_zone" "main" {
-  name         = "customername.com"
-  private_zone = false
-}
+# # Get ID of the zone hosted in Route53 (if it's not managed by Terraform)
+# data "aws_route53_zone" "main" {
+#   name         = "customername.com"
+#   private_zone = false
+# }
 
-# create CNAME for 'desiredsubdomainname' pointed to the loadbalancer
-resource "aws_route53_record" "dns_record" {
-  zone_id = data.aws_route53_zone.main.zone_id
-  name    = "desiredsubdomainname"
-  type    = "CNAME"
-  ttl     = "300"
-  records = [data.kubernetes_service.ingress.load_balancer_ingress.0.hostname]
-}
+# # create CNAME for 'desiredsubdomainname' pointed to the loadbalancer
+# resource "aws_route53_record" "dns_record" {
+#   zone_id = data.aws_route53_zone.main.zone_id
+#   name    = "desiredsubdomainname"
+#   type    = "CNAME"
+#   ttl     = "300"
+#   records = [data.kubernetes_service.ingress.load_balancer_ingress.0.hostname]
+# }
 
 # ==================== Example of ArgoCD installation via Helm Chart ====================
 # resource "kubernetes_namespace" "argocd" {

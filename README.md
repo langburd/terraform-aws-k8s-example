@@ -3,8 +3,6 @@
 
 Example of AWS EKS cluster build with Terraform
 
-
-
 ## Features
 
 - EKS uses spot instances
@@ -15,5 +13,3 @@ Example of AWS EKS cluster build with Terraform
 ## Authors
 
 - [@langburd](https://www.github.com/langburd)
-
-  
