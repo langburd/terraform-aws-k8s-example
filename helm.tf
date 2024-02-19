@@ -124,6 +124,4 @@ data "kubernetes_service" "ingress" {
 #   data = {
 #     sshPrivateKey = local.argocd_ssh_key_base64
 #   }
-
 # }
-
