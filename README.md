@@ -8,7 +8,7 @@ Example of AWS EKS cluster build with Terraform
 - EKS uses spot instances
 - Kubeconfig is saved as `kubeconfig_*` in the root of the project
 - Installation of Nginx Ingress controller using official Helm chart is included
-- Added creation of CNAME pointed to AWS LoadBalancer used by Ingress Controller
+- Added creation of CNAME DNS record pointed to AWS LoadBalancer used by Ingress Controller
   
 ## Authors
 
